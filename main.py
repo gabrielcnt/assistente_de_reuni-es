@@ -4,6 +4,7 @@ from pathlib import Path
 from openai import OpenAI
 
 from config import OPENAI_API_KEY
+from pdf_generator import salvar_pdf
 from prompt import PROMPT_ANALISE_REUNIAO
 
 client = OpenAI(api_key=OPENAI_API_KEY)
@@ -143,9 +144,7 @@ def main():
     resumo = analisar_reuniao(texto)
 
     salvar_resumo(resumo)
-
-    print("\n---- TRANSCRIÇÂO COMPLETA ----\n")
-    print(texto[:1000])
+    salvar_pdf(resumo)
 
 
 if __name__ == "__main__":
