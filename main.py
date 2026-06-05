@@ -4,6 +4,7 @@ from pathlib import Path
 from openai import OpenAI
 
 from config import OPENAI_API_KEY
+from pdf_generator import salvar_pdf
 from prompt import PROMPT_ANALISE_REUNIAO
 
 client = OpenAI(api_key=OPENAI_API_KEY)
@@ -11,6 +12,8 @@ client = OpenAI(api_key=OPENAI_API_KEY)
 AUDIO_DIR = Path("audio")
 TRANS_DIR = Path("transcricoes")
 TRANS_DIR.mkdir(exist_ok=True)
+RESUMO_DIR = Path("resumos")
+RESUMO_DIR.mkdir(exist_ok=True)
 
 
 def encontrar_audio():
@@ -80,32 +83,68 @@ def salvar_transcricao(texto):
 def analisar_reuniao(transcricao):
     print("Analisando reunião...")
 
-    prompt = PROMPT_ANALISE_REUNIAO.format(
-        transcricao=transcricao
-    )
+    prompt = PROMPT_ANALISE_REUNIAO.format(transcricao=transcricao)
 
-    response = client.responses.create(
-        model="gpt-4.1-mini",
-        input=prompt
-    )
+    response = client.responses.create(model="gpt-4.1-mini", input=prompt)
 
     print("Análise concluida")
 
     return response.output_text
 
+
+def salvar_resumo(resumo):
+    data = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+    nome_arquivo = f"resumo_{data}.md"
+
+    caminho = RESUMO_DIR / nome_arquivo
+
+    with open(caminho, "w", encoding="utf-8") as f:
+        f.write(resumo)
+
+    print(f"Resumo salvo em: {caminho}")
+
+    return caminho
+
+
+def encontrar_transcricao():
+    arquivos = sorted(TRANS_DIR.glob("*.txt"))
+
+    if not arquivos:
+        return None
+
+    return arquivos[-1]
+
+
+def carregar_transcricao(caminho):
+    with open(caminho, "r", encoding="utf-8") as f:
+        return f.read()
+
+
 def main():
-    print("Buscando chunks de áudio...")
 
-    chunks = encontrar_chunks()
+    caminho_transcricao = encontrar_transcricao()
 
-    print(f"{len(chunks)} partes encontradas!")
+    if caminho_transcricao:
+        print(f"Usando transcrição existente: {caminho_transcricao}")
 
-    texto = transcrever_chunks(chunks)
+        texto = carregar_transcricao(caminho_transcricao)
 
-    salvar_transcricao(texto)
+    else:
+        print("Nenhuma transcrição encontrada.")
 
-    print("\n---- TRANSCRIÇÂO COMPLETA ----\n")
-    print(texto[:1000])
+        chunks = encontrar_chunks()
+
+        print(f"{len(chunks)} partes encontradas!")
+
+        texto = transcrever_chunks(chunks)
+
+        salvar_transcricao(texto)
+
+    resumo = analisar_reuniao(texto)
+
+    salvar_resumo(resumo)
+    salvar_pdf(resumo)
 
 
 if __name__ == "__main__":
