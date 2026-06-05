@@ -1,3 +1,4 @@
+from datetime import datetime
 from pathlib import Path
 
 from openai import OpenAI
@@ -7,6 +8,8 @@ from config import OPENAI_API_KEY
 client = OpenAI(api_key=OPENAI_API_KEY)
 
 AUDIO_DIR = Path("audio")
+TRANS_DIR = Path("transcricoes")
+TRANS_DIR.mkdir(exist_ok=True)
 
 
 def encontrar_audio():
@@ -23,6 +26,13 @@ def encontrar_audio():
     return audio
 
 
+def encontrar_chunks(pasta="audio/partes"):
+    arquivos = sorted(Path(pasta).glob("*mp3"))
+    if not arquivos:
+        raise FileNotFoundError("Nenhum chunk encontrado")
+    return arquivos
+
+
 def transcrever_audio(caminho_audio):
     print("Transcrevendo audio...")
 
@@ -37,12 +47,48 @@ def transcrever_audio(caminho_audio):
 
     return texto
 
+
+def transcrever_chunks(pasta="audio/partes"):
+    arquivos = sorted(Path(pasta).glob("*mp3"))
+
+    transcricao_total = []
+
+    for i, arquivo in enumerate(arquivos):
+        print(f"Transcrevendo parte {i + 1}/{len(arquivos)}: {arquivo}")
+
+        with open(arquivo, "rb") as audio:
+            transcript = client.audio.transcriptions.create(
+                model="gpt-4o-mini-transcribe", file=audio
+            )
+        transcricao_total.append(transcript.text)
+    return "\n".join(transcricao_total)
+
+
+def salvar_transcricao(texto):
+    data = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+    nome_arquivo = f"transcricao_{data}.txt"
+    caminho = TRANS_DIR / nome_arquivo
+
+    with open(caminho, "w", encoding="utf-8") as f:
+        f.write(texto)
+
+    print(f"Transcrição salva em: {caminho}")
+    return caminho
+
+
 def main():
-    audio = encontrar_audio()
+    print("Buscando chunks de áudio...")
 
-    texto = transcrever_audio(audio)
+    chunks = encontrar_chunks()
 
-    print("\n---- TRANSCRIÇÂO ----\n")
+    print(f"{len(chunks)} partes encontradas!")
+
+    texto = transcrever_chunks("audio/partes")
+
+    salvar_transcricao(texto)
+
+    print("\n---- TRANSCRIÇÂO COMPLETA ----\n")
     print(texto[:1000])
 
 
