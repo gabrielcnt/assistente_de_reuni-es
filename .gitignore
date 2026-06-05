@@ -4,3 +4,4 @@ venv/
 *.mp3
 __pycache__
 transcricoes/
+resumos/
