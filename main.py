@@ -4,6 +4,7 @@ from pathlib import Path
 from openai import OpenAI
 
 from config import OPENAI_API_KEY
+from prompt import PROMPT_ANALISE_REUNIAO
 
 client = OpenAI(api_key=OPENAI_API_KEY)
 
@@ -48,8 +49,7 @@ def transcrever_audio(caminho_audio):
     return texto
 
 
-def transcrever_chunks(pasta="audio/partes"):
-    arquivos = sorted(Path(pasta).glob("*mp3"))
+def transcrever_chunks(arquivos):
 
     transcricao_total = []
 
@@ -77,6 +77,22 @@ def salvar_transcricao(texto):
     return caminho
 
 
+def analisar_reuniao(transcricao):
+    print("Analisando reunião...")
+
+    prompt = PROMPT_ANALISE_REUNIAO.format(
+        transcricao=transcricao
+    )
+
+    response = client.responses.create(
+        model="gpt-4.1-mini",
+        input=prompt
+    )
+
+    print("Análise concluida")
+
+    return response.output_text
+
 def main():
     print("Buscando chunks de áudio...")
 
@@ -84,7 +100,7 @@ def main():
 
     print(f"{len(chunks)} partes encontradas!")
 
-    texto = transcrever_chunks("audio/partes")
+    texto = transcrever_chunks(chunks)
 
     salvar_transcricao(texto)
 
