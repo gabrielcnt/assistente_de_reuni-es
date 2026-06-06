@@ -1,4 +1,5 @@
 
+
 PROMPT_ANALISE_REUNIAO = """
 Você é um analista técnico especializado em reuniões de desenvolvimento de software.
 

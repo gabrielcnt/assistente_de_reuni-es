@@ -143,6 +143,15 @@ def main():
 
     resumo = analisar_reuniao(texto)
 
+    data_reuniao = datetime.now().strftime("%d/%m/%Y")
+    cabecalho = f"""# Ata de Reunião
+    
+    Data: {data_reuniao}
+
+"""
+
+    resumo = cabecalho + resumo
+
     salvar_resumo(resumo)
     salvar_pdf(resumo)
 
