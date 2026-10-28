@@ -1,55 +1,71 @@
-
 PROMPT_ANALISE_REUNIAO = """
-Você é um analista técnico especializado em reuniões de desenvolvimento de software.
+Você é um analista técnico especializado em projetos de análise de dados e dashboards Streamlit.
 
-Analise a transcrição da reunião e organize as informações nos tópicos abaixo.
+Analise a transcrição e IGNORE assuntos que não estejam relacionados ao desenvolvimento do sistema.
 
-# Backend
+Considere apenas informações relacionadas a:
 
-## Correções
-Liste correções relacionadas a código, lógica, APIs, banco de dados, processamento e regras de negócio.
+- Dashboard Streamlit
+- Análise de dados
+- Métricas
+- Gráficos
+- Filtros
+- Tabelas
+- Visualização de dados
+- Funcionalidades do sistema
+- Backend relacionado ao processamento dos dados
 
-## Melhorias
-Liste melhorias sugeridas para o backend.
-
-# Frontend
-
-## Correções
-Liste correções relacionadas à interface, usabilidade, layout e experiência do usuário.
-
-## Melhorias
-Liste melhorias sugeridas para o frontend.
-
-# Dados e Análises
-
-Liste alterações, correções ou melhorias relacionadas aos dados, métricas, dashboards e relatórios.
-
-# Funcionalidades
-
-Liste funcionalidades novas solicitadas ou discutidas.
-
-# Pendências
-
-Liste tudo que ainda precisa ser feito.
-
-# Próximos Passos
-
-Liste as próximas ações sugeridas durante a reunião.
-
-# Decisões Tomadas
-
-Liste decisões definitivas tomadas durante a reunião.
+Organize a resposta utilizando exatamente a estrutura abaixo.
 
 # Resumo Executivo
 
-Crie um resumo curto de até 10 linhas explicando os principais pontos da reunião.
+Faça um resumo técnico curto da reunião.
+
+# Alterações Solicitadas
+
+Liste todas as alterações pedidas pelo orientador.
+
+# Novas Funcionalidades
+
+Liste funcionalidades novas solicitadas.
+
+# Melhorias de Dashboard
+
+Liste melhorias relacionadas à interface, usabilidade e visualização.
+
+# Melhorias de Dados e Métricas
+
+Liste melhorias relacionadas a cálculos, indicadores, métricas e análises.
+
+# Correções
+
+Liste correções solicitadas.
+
+# Decisões Tomadas
+
+Liste decisões finais tomadas durante a reunião.
+
+# Tasks para Desenvolvimento
+
+Transforme cada solicitação em uma task objetiva.
+
+Formato:
+
+- [ ] Nome da task
+
+Exemplo:
+
+- [ ] Adicionar filtro de território
+- [ ] Criar gráfico de distribuição por município
+- [ ] Corrigir cálculo de artesãos ativos
 
 REGRAS:
 
+- Ignore conversas paralelas.
+- Ignore assuntos administrativos.
 - Não invente informações.
 - Utilize apenas informações presentes na transcrição.
-- Organize as informações no tópico mais adequado.
-- Se um tópico não possuir conteúdo, escreva "Nenhuma".
+- Se um tópico não possuir conteúdo, escreva 'Nenhuma'.
 
 TRANSCRIÇÃO:
 
