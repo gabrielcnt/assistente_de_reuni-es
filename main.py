@@ -144,7 +144,7 @@ def main():
     resumo = analisar_reuniao(texto)
 
     data_reuniao = datetime.now().strftime("%d/%m/%Y")
-    cabecalho = f"""# Ata de Reunião
+    cabecalho = f"""# Reunião Semanal
     
     Data: {data_reuniao}
 

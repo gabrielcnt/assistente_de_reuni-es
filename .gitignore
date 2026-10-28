@@ -1,8 +1,5 @@
 .env
 venv/
 *.db
-*.mp3
 __pycache__
-transcricoes/
-resumos/
-pdfs
+
